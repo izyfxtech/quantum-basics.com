@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Static sitemap for the marketing site's top-level pages.
+
+  This intentionally does NOT enumerate individual blog posts
+  (/blog/$slug) or project case studies (/projects/$slug) -- those are
+  rows in Supabase, not files, and a static file can't stay in sync with
+  them. Generating those entries needs a small server route that queries
+  published blog_posts / projects and returns XML, which needs TanStack
+  Start's server-route API (this project is on a very recent
+  @tanstack/react-start release where that API was still settling at the
+  time this was written -- check the current docs for
+  `createServerFileRoute` or equivalent before wiring it up). Until then,
+  search engines can still discover those pages by crawling the links on
+  /blog and /projects.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://www.quantum-basics.com/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://www.quantum-basics.com/about</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://www.quantum-basics.com/services</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.quantum-basics.com/projects</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.quantum-basics.com/academy</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.quantum-basics.com/blog</loc>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://www.quantum-basics.com/contact</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://www.quantum-basics.com/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  <url>
+    <loc>https://www.quantum-basics.com/cookies</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.2</priority>
+  </url>
+</urlset>

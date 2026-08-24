@@ -1,0 +1,81 @@
+/*
+ * Academy portal styling.
+ *
+ * Deliberately independent of the marketing site's design language: the
+ * portal uses the sans family everywhere (no Fraunces display serif), a
+ * monospaced label style, tighter radii and a graphite/near-black chrome.
+ * Only the emerald accent is shared with quantum-basics.com so the two
+ * properties still read as one company.
+ */
+
+.qa {
+  --qa-rail: oklch(0.16 0.01 165);
+  --qa-rail-fg: oklch(0.96 0.003 165);
+  --qa-rail-muted: oklch(0.68 0.008 165);
+  --qa-line: oklch(0.9 0.004 165);
+  --qa-surface: oklch(0.995 0.001 165);
+  font-family: var(--font-sans);
+  color: var(--foreground);
+  background: var(--qa-surface);
+}
+
+.qa h1,
+.qa h2,
+.qa h3,
+.qa h4 {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  font-variation-settings: normal;
+}
+
+.qa-wrap {
+  width: 100%;
+  max-width: 84rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .qa-wrap {
+    padding-inline: 2rem;
+  }
+}
+
+.qa-label {
+  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.qa-card {
+  border: 1px solid var(--qa-line);
+  border-radius: 0.5rem;
+  background: var(--card);
+}
+
+.qa-rule {
+  border-top: 1px solid var(--qa-line);
+}
+
+/* Thin progress meter used across dashboard, catalogue and player. */
+.qa-meter {
+  height: 4px;
+  border-radius: 999px;
+  background: color-mix(in oklch, var(--qa-line) 70%, transparent);
+  overflow: hidden;
+}
+
+.qa-meter > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--primary);
+}
+
+.qa-prose p {
+  margin-top: 0.9rem;
+  line-height: 1.75;
+  color: var(--muted-foreground);
+}

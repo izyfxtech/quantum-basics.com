@@ -1,0 +1,202 @@
+import { i as __toESM } from "../_runtime.mjs";
+import { n as require_jsx_runtime, r as require_react } from "../_libs/react+tanstack__react-query.mjs";
+import { T as Globe, h as MessageCircle, p as Phone, v as MapPin, y as Mail } from "../_libs/lucide-react.mjs";
+import { c as AnimatePresence } from "../_libs/framer-motion+[...].mjs";
+import { t as motion } from "../_libs/motion.mjs";
+import { d as StaggerItem, i as company, l as Reveal, u as Stagger } from "./router-TQIET5v8.mjs";
+import { n as PageIntro } from "./PageHero-BlzZQPb_.mjs";
+import { t as services } from "./services-HRs6jqL2.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/contact-ia1S5dTf.js
+var import_react = /* @__PURE__ */ __toESM(require_react());
+var import_jsx_runtime = require_jsx_runtime();
+function Contact() {
+	const [sent, setSent] = (0, import_react.useState)(false);
+	function handleSubmit(event) {
+		event.preventDefault();
+		setSent(true);
+	}
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PageIntro, {
+		eyebrow: "Contact",
+		title: "Tell us what you're building",
+		description: "Share the site, network or plant you need supported and our engineers will respond with a scoped approach."
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+		className: "section-shell py-20 md:py-24",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "grid gap-12 lg:grid-cols-[1fr_1.1fr]",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					className: "text-2xl font-semibold",
+					children: "Reach the team"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Stagger, {
+					className: "mt-8 space-y-6",
+					gap: .09,
+					children: [
+						{
+							icon: MapPin,
+							label: "Head office",
+							value: company.address
+						},
+						{
+							icon: Mail,
+							label: "Email",
+							value: company.email,
+							href: `mailto:${company.email}`
+						},
+						{
+							icon: Phone,
+							label: "Phone",
+							value: company.phone,
+							href: company.phoneHref
+						},
+						{
+							icon: MessageCircle,
+							label: "WhatsApp",
+							value: company.whatsapp,
+							href: company.whatsappHref
+						},
+						{
+							icon: Globe,
+							label: "Website",
+							value: company.website,
+							href: company.websiteHref
+						}
+					].map(({ icon: Icon, label, value, href }) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(StaggerItem, {
+						className: "group flex gap-4",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary transition-all duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, { className: "h-5 w-5" })
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm font-semibold",
+							children: label
+						}), href ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
+							href,
+							className: "mt-1 block text-sm text-muted-foreground hover:text-primary",
+							children: value
+						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-1 text-sm text-muted-foreground",
+							children: value
+						})] })]
+					}, label))
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Reveal, {
+					delay: .15,
+					className: "mt-10 rounded-2xl border border-border bg-secondary/60 p-6",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm font-semibold",
+						children: "Office hours"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-2 text-sm text-muted-foreground",
+						children: "Monday – Friday, 08:00 – 17:00 WAT. Field support arranged by project schedule."
+					})]
+				})
+			] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, {
+				y: 40,
+				className: "glow-ring rounded-2xl border border-border bg-card p-8 shadow-panel",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AnimatePresence, {
+					mode: "wait",
+					children: sent ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(motion.div, {
+						initial: {
+							opacity: 0,
+							scale: .96
+						},
+						animate: {
+							opacity: 1,
+							scale: 1
+						},
+						className: "py-16 text-center",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							className: "text-2xl font-semibold",
+							children: "Thank you"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mt-3 text-sm text-muted-foreground",
+							children: "Your enquiry has been captured. A member of the team will be in touch shortly."
+						})]
+					}, "sent") : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(motion.form, {
+						exit: {
+							opacity: 0,
+							y: -8
+						},
+						onSubmit: handleSubmit,
+						className: "space-y-5",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "text-2xl font-semibold",
+								children: "Request a consultation"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid gap-5 sm:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field, {
+									label: "Full name",
+									name: "name"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field, {
+									label: "Company",
+									name: "company",
+									required: false
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid gap-5 sm:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field, {
+									label: "Email",
+									name: "email",
+									type: "email"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Field, {
+									label: "Phone",
+									name: "phone",
+									type: "tel",
+									required: false
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								htmlFor: "interest",
+								className: "text-sm font-medium",
+								children: "Area of interest"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+								id: "interest",
+								name: "interest",
+								className: "mt-2 h-11 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring/30",
+								children: [
+									services.map((s) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: s.title }, s.slug)),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: "Academy training" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: "Other enquiry" })
+								]
+							})] }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+								htmlFor: "message",
+								className: "text-sm font-medium",
+								children: "Project details"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+								id: "message",
+								name: "message",
+								rows: 5,
+								required: true,
+								className: "mt-2 w-full rounded-md border border-input bg-background px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring/30"
+							})] }),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "submit",
+								className: "inline-flex h-12 w-full items-center justify-center rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all duration-300 hover:bg-primary-deep hover:shadow-lift",
+								children: "Send enquiry"
+							})
+						]
+					}, "form")
+				})
+			})]
+		})
+	})] });
+}
+function Field({ label, name, type = "text", required = true }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+		htmlFor: name,
+		className: "text-sm font-medium",
+		children: label
+	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+		id: name,
+		name,
+		type,
+		required,
+		className: "mt-2 h-11 w-full rounded-md border border-input bg-background px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring/30"
+	})] });
+}
+//#endregion
+export { Contact as component };

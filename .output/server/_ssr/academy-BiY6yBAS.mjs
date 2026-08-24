@@ -1,0 +1,63 @@
+//#region node_modules/.nitro/vite/services/ssr/assets/academy-BiY6yBAS.js
+var academyTracks = [
+	{
+		number: "01",
+		title: "Industrial Automation & Smart Field Technologies",
+		scope: "Industrial production process automation, smart fields for oil and gas production, and security solutions.",
+		modules: [
+			"SCADA systems and Programmable Logic Controllers (PLCs)",
+			"Field instrumentation and automation loops",
+			"Advanced industrial security and surveillance systems"
+		]
+	},
+	{
+		number: "02",
+		title: "Smart Utility & WAGES Metering",
+		scope: "Water, Air, Gas, Electricity and Steam metering, smart grid and smart water utilities.",
+		modules: [
+			"IoT sensor integration and telemetry",
+			"Smart grid communication and load balancing",
+			"Data validation and utility billing management"
+		]
+	},
+	{
+		number: "03",
+		title: "Energy Management & Retail Automation",
+		scope: "Energy management for manufacturing and commercial buildings, and smart fuel retailing and stock management.",
+		modules: [
+			"Energy auditing and efficiency optimisation",
+			"Automated fuel management and dispensing networks",
+			"Real-time resource monitoring systems"
+		]
+	},
+	{
+		number: "04",
+		title: "Telecommunications & Connectivity Infrastructure",
+		scope: "Commercial access network planning, installation, commissioning and optimisation, plus industrial and utility networking.",
+		modules: [
+			"Access network planning and link budgeting",
+			"RF and fibre installation and commissioning",
+			"Enterprise and industrial networking protocols"
+		]
+	}
+];
+var academyAudience = [
+	{
+		title: "Individual professionals",
+		body: "Technicians, engineers and operators seeking professional growth and recognised competencies."
+	},
+	{
+		title: "Corporate teams",
+		body: "Organisations upskilling their workforce, digitising field operations and modernising infrastructure."
+	},
+	{
+		title: "University graduates",
+		body: "Real-world knowledge and practical experience across industrial engineering disciplines."
+	},
+	{
+		title: "Secondary school graduates",
+		body: "Guidance and training for those exploring engineering — earning while they learn."
+	}
+];
+//#endregion
+export { academyTracks as n, academyAudience as t };

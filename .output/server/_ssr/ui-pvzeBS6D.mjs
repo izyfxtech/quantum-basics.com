@@ -1,0 +1,112 @@
+import { n as require_jsx_runtime } from "../_libs/react+tanstack__react-query.mjs";
+import { S as LoaderCircle } from "../_libs/lucide-react.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/ui-pvzeBS6D.js
+var import_jsx_runtime = require_jsx_runtime();
+/** Compact page heading for portal screens: mono label + sans title.
+* No hero, no background image, no reveal animation — intentionally not the
+* marketing site's PageHero/PageIntro. */
+function PortalHeading({ label, title, description, actions }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
+		className: "flex flex-wrap items-end justify-between gap-4 pb-6",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "min-w-0",
+			children: [
+				label ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "qa-label text-primary",
+					children: label
+				}) : null,
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "mt-2 text-2xl sm:text-[1.75rem]",
+					children: title
+				}),
+				description ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground",
+					children: description
+				}) : null
+			]
+		}), actions ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "flex flex-wrap gap-2",
+			children: actions
+		}) : null]
+	});
+}
+function Panel({ children, className = "" }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+		className: `qa-card p-5 sm:p-6 ${className}`,
+		children
+	});
+}
+function Tag({ children }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+		className: "qa-label rounded border border-primary/25 bg-primary/8 px-2 py-1 text-primary",
+		children
+	});
+}
+function Meter({ percent }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "qa-meter",
+		role: "progressbar",
+		"aria-valuenow": percent,
+		"aria-valuemin": 0,
+		"aria-valuemax": 100,
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { style: { width: `${Math.min(100, Math.max(0, percent))}%` } })
+	});
+}
+var BTN_BASE = "inline-flex h-10 items-center justify-center gap-2 rounded px-4 text-sm font-semibold transition-colors disabled:opacity-55";
+var BTN_VARIANTS = {
+	solid: "bg-primary text-primary-foreground hover:bg-primary-deep",
+	outline: "border border-[var(--qa-line)] bg-card hover:bg-secondary",
+	ghost: "text-muted-foreground hover:bg-secondary hover:text-foreground",
+	danger: "border border-destructive/30 text-destructive hover:bg-destructive/8"
+};
+function Btn({ children, onClick, type = "button", variant = "solid", disabled, className = "" }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+		type,
+		onClick,
+		disabled,
+		className: `${BTN_BASE} ${BTN_VARIANTS[variant]} ${className}`,
+		children
+	});
+}
+var FIELD_CLASS = "mt-1.5 h-11 w-full rounded border border-[var(--qa-line)] bg-card px-3 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-ring/25";
+function TextField({ label, value, onChange, type = "text", placeholder, required }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+		className: "block",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: "qa-label text-muted-foreground",
+			children: label
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+			type,
+			value,
+			required,
+			placeholder,
+			onChange: (event) => onChange(event.target.value),
+			className: FIELD_CLASS
+		})]
+	});
+}
+function SelectField({ label, value, onChange, options }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+		className: "block",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: "qa-label text-muted-foreground",
+			children: label
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", {
+			value,
+			onChange: (event) => onChange(event.target.value),
+			className: FIELD_CLASS,
+			children: options.map((option) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+				value: option,
+				children: option
+			}, option))
+		})]
+	});
+}
+function Spinner({ label }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+		className: "flex items-center gap-2 text-sm text-muted-foreground",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(LoaderCircle, { className: "h-4 w-4 animate-spin" }), label ?? "Loading…"]
+	});
+}
+//#endregion
+export { SelectField as a, TextField as c, PortalHeading as i, Meter as n, Spinner as o, Panel as r, Tag as s, Btn as t };

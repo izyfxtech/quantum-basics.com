@@ -1,0 +1,60 @@
+/*
+ * Blog Studio styling.
+ *
+ * Independent of both the marketing site and the Academy portal (see
+ * src/academy/academy.css for the Academy's rationale — same idea here).
+ * Where the Academy is a graphite, monospace-label dashboard, the Studio
+ * leans into the marketing site's serif display face and a warm paper
+ * surface — it's a writing tool, not an admin console. Only the emerald
+ * accent is shared, so all three still read as one company.
+ */
+
+.bs {
+  --bs-rail: oklch(0.99 0.004 80);
+  --bs-rail-fg: oklch(0.24 0.01 80);
+  --bs-rail-muted: oklch(0.5 0.012 80);
+  --bs-line: oklch(0.9 0.008 80);
+  --bs-surface: oklch(0.98 0.004 80);
+  font-family: var(--font-sans);
+  color: var(--foreground);
+  background: var(--bs-surface);
+}
+
+.bs h1,
+.bs h2,
+.bs h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.bs-wrap {
+  width: 100%;
+  max-width: 68rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .bs-wrap {
+    padding-inline: 2rem;
+  }
+}
+
+.bs-label {
+  font-family: ui-monospace, "SFMono-Regular", "Menlo", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--bs-rail-muted);
+}
+
+.bs-card {
+  border: 1px solid var(--bs-line);
+  border-radius: 0.75rem;
+  background: var(--card);
+}
+
+.bs-rule {
+  border-top: 1px solid var(--bs-line);
+}

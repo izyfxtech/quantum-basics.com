@@ -1,0 +1,1 @@
+var e=`/assets/academy-C6Ks0Fq5.jpg`;export{e as t};
