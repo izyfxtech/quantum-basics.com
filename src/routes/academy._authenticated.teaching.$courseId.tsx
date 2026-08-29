@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import {
   Btn,
   EmptyState,
@@ -62,20 +63,23 @@ export const Route = createFileRoute("/academy/_authenticated/teaching/$courseId
     meta: [{ title: "Teaching | Quantum Basics Academy" }],
   }),
   beforeLoad: async ({ params }) => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/academy/auth" });
+    // getCurrentUser() is cached (see that module), so this doesn't repeat
+    // the parent route's own Auth check. The staff/admin lookup below is a
+    // live per-navigation authorization check, same reasoning as admin.tsx.
+    const user = await getCurrentUser();
+    if (!user) throw redirect({ to: "/academy/auth" });
 
     const [{ data: staffRow }, { data: adminRow }] = await Promise.all([
       supabase
         .from("course_staff")
         .select("id")
         .eq("course_id", params.courseId)
-        .eq("user_id", data.user.id)
+        .eq("user_id", user.id)
         .maybeSingle(),
       supabase
         .from("user_roles")
         .select("role")
-        .eq("user_id", data.user.id)
+        .eq("user_id", user.id)
         .eq("role", "super_admin")
         .maybeSingle(),
     ]);

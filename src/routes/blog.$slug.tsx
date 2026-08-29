@@ -123,7 +123,7 @@ function BlogPostPage() {
             <img
               src={heroImageUrl(post.hero_image_path)}
               alt={post.hero_alt ?? post.title}
-              loading="lazy"
+              fetchPriority="high"
               width={1600}
               height={1000}
               className="h-64 w-full rounded-2xl border border-border object-cover md:h-96"

@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowRight, BookOpen, Clock, Cpu, Gauge, Network, Search, Zap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import { EmptyState, PortalHeading, Spinner, Tag } from "@/academy/components/ui";
 import "@/academy/academy.css";
 
@@ -67,12 +68,12 @@ function CourseCatalogue() {
       if (!active) return;
       setCourses(data ?? []);
 
-      const { data: session } = await supabase.auth.getUser();
-      if (!session.user) return;
+      const user = await getCurrentUser();
+      if (!user) return;
       const { data: rows } = await supabase
         .from("enrollments")
         .select("course_id")
-        .eq("user_id", session.user.id);
+        .eq("user_id", user.id);
       if (active) setEnrolled(new Set((rows ?? []).map((r) => r.course_id)));
     })();
     return () => {

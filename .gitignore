@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# build output
+.output/
+.tanstack/
+.vinxi/
+dist/
+build/
+
+# env files (never commit real secrets)
+.env
+.env.local
+.env.*.local
+
+# editor/OS
+.DS_Store
+*.log
+npm-debug.log*
+
+# TanStack Start / Nitro / Deployment
+.nitro/
+.vercel/
+
+# Supabase
+.supabase/
+supabase/.branches/
+

@@ -4,7 +4,7 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
-import { SUBDOMAIN_PREFIXES } from "./academy/lib/subdomains";
+import { PROVISIONED_APEX_HOSTS, SUBDOMAIN_PREFIXES } from "./academy/lib/subdomains";
 
 const PREFIX_TO_SUBDOMAIN_LABEL = Object.fromEntries(
   Object.entries(SUBDOMAIN_PREFIXES).map(([label, prefix]) => [prefix, label]),
@@ -22,6 +22,15 @@ const PREFIX_TO_SUBDOMAIN_LABEL = Object.fromEntries(
  */
 function redirectToSubdomain(request: Request): Response | null {
   const url = new URL(request.url);
+
+  // Only redirect on hosts where academy.<host> / blog.<host> are real,
+  // DNS-provisioned domains (see PROVISIONED_APEX_HOSTS). On anything else —
+  // Vercel's own *.vercel.app default/preview domains, localhost, etc. —
+  // "academy.<that-host>" doesn't resolve, so redirecting there would just
+  // break the page (browser can't reach it). Leave /academy/* and /blog/*
+  // served directly on those hosts instead.
+  if (!PROVISIONED_APEX_HOSTS.includes(url.hostname)) return null;
+
   const hostLabel = url.hostname.split(".")[0];
   if (hostLabel && SUBDOMAIN_PREFIXES[hostLabel]) return null; // already on a subdomain
 

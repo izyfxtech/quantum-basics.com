@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 
 export type BlogRole = "editor" | "author";
 
@@ -20,8 +21,7 @@ export async function fetchMyBlogAccess(): Promise<{
   access: BlogAccess | null;
   error: string | null;
 }> {
-  const { data: userData } = await supabase.auth.getUser();
-  const user = userData.user;
+  const user = await getCurrentUser();
   if (!user) return { access: null, error: null };
 
   const [membershipRes, profileRes] = await Promise.all([

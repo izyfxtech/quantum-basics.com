@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Loader2, Search, UserPlus, X } from "lucide-react";
 import { Btn, ErrorNotice, Panel, TextField } from "@/academy/components/ui";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import { createEvent, fetchCourses, postNotice, type Course } from "@/academy/lib/lms";
 import {
   assignCourseStaff,
@@ -24,12 +25,18 @@ export const Route = createFileRoute("/academy/_authenticated/admin")({
     meta: [{ title: "Admin | Quantum Basics Academy" }],
   }),
   beforeLoad: async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/academy/auth" });
+    // getCurrentUser() is cached (see that module) so this doesn't repeat
+    // the parent route's own Auth check. The super_admin lookup below is
+    // left as a live query on every navigation, not cached the same way —
+    // it's an authorization boundary rather than a one-way flag like
+    // onboarding, so a just-revoked admin should stop seeing this page
+    // promptly rather than for however long a cache TTL says.
+    const user = await getCurrentUser();
+    if (!user) throw redirect({ to: "/academy/auth" });
     const { data: rows } = await supabase
       .from("user_roles")
       .select("role")
-      .eq("user_id", data.user.id)
+      .eq("user_id", user.id)
       .eq("role", "super_admin");
     if (!rows || rows.length === 0) throw redirect({ to: "/academy/dashboard" });
   },

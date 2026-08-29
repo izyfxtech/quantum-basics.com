@@ -57,7 +57,15 @@ function formatDate(iso: string) {
   });
 }
 
-function Hero({ post, className }: { post: ListRow; className: string }) {
+function Hero({
+  post,
+  className,
+  priority = false,
+}: {
+  post: ListRow;
+  className: string;
+  priority?: boolean;
+}) {
   if (!post.hero_image_path) {
     return (
       <div
@@ -73,7 +81,8 @@ function Hero({ post, className }: { post: ListRow; className: string }) {
     <img
       src={heroImageUrl(post.hero_image_path)}
       alt={post.hero_alt ?? post.title}
-      loading="lazy"
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : undefined}
       className={`${className} object-cover`}
     />
   );
@@ -99,7 +108,7 @@ function BlogIndex() {
               params={{ slug: featured.slug }}
               className="lift group grid overflow-hidden rounded-2xl border border-border bg-card transition-colors hover:border-primary lg:grid-cols-2"
             >
-              <Hero post={featured} className="h-56 w-full lg:h-full" />
+              <Hero post={featured} className="h-56 w-full lg:h-full" priority />
               <div className="flex flex-col justify-center p-7 md:p-10">
                 <p className="text-xs font-medium uppercase tracking-widest text-primary">
                   {featured.category}

@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import type { Enums } from "@/integrations/supabase/types";
 
 export type AppRole = Enums<"app_role">;
@@ -19,9 +20,29 @@ export type MyAccess = {
 const EMPTY_ACCESS_ROLES: AppRole[] = [];
 const EMPTY_COURSE_STAFF: CourseStaffAssignment[] = [];
 
-export async function fetchMyAccess(): Promise<MyAccess | null> {
-  const { data: userData } = await supabase.auth.getUser();
-  const userId = userData.user?.id;
+// AcademyShell and several individual pages (dashboard, admin, teaching)
+// each call fetchMyAccess() on their own mount, so a single first visit to
+// the Academy could fire this same pair of queries 2-3 times over. Same
+// short-TTL, dedup-in-flight pattern as getCurrentUser() -- a role change
+// can take up to this long to show up in nav badges/elevated-access
+// branches, which is an acceptable tradeoff for "my own roles, for
+// display and client-side branching" (every actual authorization decision
+// still happens at the RLS/route-guard level against a live query, not
+// against this cache).
+const ACCESS_CACHE_TTL_MS = 15_000;
+let cached: { access: MyAccess | null; expiresAt: number } | null = null;
+let inFlight: Promise<MyAccess | null> | null = null;
+
+if (typeof window !== "undefined") {
+  supabase.auth.onAuthStateChange(() => {
+    cached = null;
+    inFlight = null;
+  });
+}
+
+async function fetchMyAccessUncached(): Promise<MyAccess | null> {
+  const user = await getCurrentUser();
+  const userId = user?.id;
   if (!userId) return null;
 
   const [{ data: roleRows }, { data: staffRows }] = await Promise.all([
@@ -38,6 +59,23 @@ export async function fetchMyAccess(): Promise<MyAccess | null> {
         role: r.role as CourseStaffRole,
       })) ?? EMPTY_COURSE_STAFF,
   };
+}
+
+export async function fetchMyAccess(): Promise<MyAccess | null> {
+  const now = Date.now();
+  if (cached && cached.expiresAt > now) return cached.access;
+  if (inFlight) return inFlight;
+
+  inFlight = fetchMyAccessUncached()
+    .then((access) => {
+      cached = { access, expiresAt: Date.now() + ACCESS_CACHE_TTL_MS };
+      return access;
+    })
+    .finally(() => {
+      inFlight = null;
+    });
+
+  return inFlight;
 }
 
 export function isSuperAdmin(access: MyAccess | null): boolean {

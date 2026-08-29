@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import type { Tables, TablesUpdate } from "@/integrations/supabase/types";
 import { validateUploadFile } from "@/lib/file-validation";
 
@@ -121,7 +122,7 @@ export type PostInput = {
 export async function createPost(
   input: PostInput,
 ): Promise<{ data: BlogPost | null; error: string | null }> {
-  const { data: userData } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   const { data, error } = await supabase
     .from("blog_posts")
     .insert({
@@ -136,7 +137,7 @@ export async function createPost(
       read_minutes: input.readMinutes,
       published: input.published,
       published_at: input.publishedAt,
-      created_by: userData.user?.id ?? null,
+      created_by: user?.id ?? null,
     })
     .select("*")
     .single();

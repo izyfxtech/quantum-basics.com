@@ -15,6 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import { Btn, ErrorNotice } from "@/academy/components/ui";
 import {
   fetchCoursesByIds,
@@ -79,16 +80,16 @@ function AcademyDashboard() {
   const [eventsError, setEventsError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) return;
-    setEmail(data.user.email ?? null);
+    const user = await getCurrentUser();
+    if (!user) return;
+    setEmail(user.email ?? null);
 
     const { start, end } = currentWeekRange();
     const [{ data: row }, myAccess, myProgress, myNotices, myWeekEvents] = await Promise.all([
       supabase
         .from("profiles")
         .select("full_name, organisation, preferred_track")
-        .eq("id", data.user.id)
+        .eq("id", user.id)
         .maybeSingle(),
       fetchMyAccess(),
       fetchMyProgress(),

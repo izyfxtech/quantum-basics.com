@@ -13,6 +13,23 @@ export const SUBDOMAIN_PREFIXES: Record<string, string> = {
   blog: "/blog",
 };
 
+/**
+ * Hosts where academy.<host> / blog.<host> are real, DNS-provisioned Vercel
+ * domains. The server-side legacy-path redirect (src/server.ts) only fires
+ * when the incoming request's hostname is in this list — everywhere else
+ * (Vercel's own *.vercel.app default/preview domains, localhost, any other
+ * host) "/academy/*" and "/blog/*" are left alone and served directly, since
+ * redirecting to "academy.<that-host>" would point at a hostname nobody has
+ * configured and the browser can't resolve it.
+ *
+ * Add a host here only once you've actually added it (and its academy./blog.
+ * counterparts) as domains in Vercel with working DNS.
+ */
+export const PROVISIONED_APEX_HOSTS: string[] = [
+  // "quantum-basics.com",
+  // "www.quantum-basics.com",
+];
+
 export function subdomainPrefixForHost(hostname: string): string | null {
   const label = hostname.split(".")[0];
   return label ? (SUBDOMAIN_PREFIXES[label] ?? null) : null;

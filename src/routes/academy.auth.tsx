@@ -41,6 +41,38 @@ function resetPasswordRedirectUrl() {
   return `${window.location.origin}${physicalPath(window.location.hostname, "/academy/reset-password")}`;
 }
 
+// Three small, self-contained actions — each does exactly one Supabase call
+// and either returns or throws. No branching, no navigation, no shared
+// state: keeping them this bare makes it obvious at a glance that sign-in
+// and sign-up genuinely don't share any logic beyond the email/password
+// fields, and it's why the caller below can be a two-line dispatch instead
+// of one function with three interleaved code paths.
+
+async function signIn(email: string, password: string): Promise<void> {
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) throw error;
+}
+
+/** Returns true if the new account already has a live session (email
+ * confirmation off) and is ready to move straight into onboarding; false if
+ * Supabase requires the person to confirm their email first. */
+async function signUp(email: string, password: string): Promise<boolean> {
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: { emailRedirectTo: dashboardRedirectUrl() },
+  });
+  if (error) throw error;
+  return data.session !== null;
+}
+
+async function sendResetLink(email: string): Promise<void> {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: resetPasswordRedirectUrl(),
+  });
+  if (error) throw error;
+}
+
 function AcademyAuth() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>("signin");
@@ -50,14 +82,14 @@ function AcademyAuth() {
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
 
+  // Only redirect on mount if the user already has a session (e.g. they
+  // navigated straight to /academy/auth while logged in). Deliberately not
+  // also subscribing to onAuthStateChange here — see handleSubmit below for
+  // where the post-auth navigation actually happens instead.
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) navigate({ to: "/academy/dashboard", replace: true });
-    });
     void supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) navigate({ to: "/academy/dashboard", replace: true });
     });
-    return () => data.subscription.unsubscribe();
   }, [navigate]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -66,63 +98,58 @@ function AcademyAuth() {
     setNotice(null);
     setLoading(true);
 
-    if (mode === "reset") {
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: resetPasswordRedirectUrl(),
-      });
-      setLoading(false);
-      if (resetError) {
-        setError(resetError.message);
-        return;
+    try {
+      if (mode === "signin") {
+        await signIn(email, password);
+        // Existing account: beforeLoad on /academy/_authenticated still
+        // checks onboarding status as a safety net (e.g. an account that
+        // confirmed its email but never finished onboarding), but the
+        // common case is a direct hop straight to the dashboard.
+        navigate({ to: "/academy/dashboard", replace: true });
+      } else if (mode === "signup") {
+        const hasSession = await signUp(email, password);
+        if (hasSession) {
+          // A brand-new account always needs onboarding — send it there
+          // directly instead of via /academy/dashboard, whose beforeLoad
+          // redirect would otherwise race this same navigate() and was the
+          // actual source of the flicker between the two screens.
+          navigate({ to: "/academy/onboarding", replace: true });
+        } else {
+          setNotice("Account created. Check your email to confirm your address, then sign in.");
+        }
+      } else {
+        await sendResetLink(email);
+        setNotice("If an account exists for that email, a password reset link is on its way.");
       }
-      setNotice("If an account exists for that email, a password reset link is on its way.");
-      return;
-    }
-
-    if (mode === "signin") {
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+    } catch (err) {
+      // Covers both a resolved-with-error result (re-thrown by the helpers
+      // above) and a genuinely thrown failure — network drops, CORS/origin
+      // rejections, etc. — so the spinner never hangs silently either way.
+      setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
-      if (signInError) {
-        setError(signInError.message);
-        return;
-      }
-      navigate({ to: "/academy/dashboard", replace: true });
-      return;
     }
-
-    const { data, error: signUpError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: dashboardRedirectUrl(),
-      },
-    });
-    setLoading(false);
-    if (signUpError) {
-      setError(signUpError.message);
-      return;
-    }
-    if (!data.session) {
-      setNotice("Account created. Check your email to confirm your address, then sign in.");
-      return;
-    }
-    navigate({ to: "/academy/dashboard", replace: true });
   }
 
   async function handleGoogle() {
     setError(null);
     setLoading(true);
-    const { error: oauthError } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: dashboardRedirectUrl(),
-      },
-    });
-    // On success Supabase redirects the browser to Google, so there is nothing
-    // further to do here. We only reach this point on failure.
-    if (oauthError) {
+    try {
+      const { error: oauthError } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: dashboardRedirectUrl(),
+        },
+      });
+      // On success Supabase redirects the browser to Google, so there is
+      // nothing further to do here. We only reach this point on failure.
+      if (oauthError) {
+        setError(oauthError.message ?? "Google sign-in failed. Please try again.");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Google sign-in failed. Please try again.");
+    } finally {
       setLoading(false);
-      setError(oauthError.message ?? "Google sign-in failed. Please try again.");
     }
   }
 

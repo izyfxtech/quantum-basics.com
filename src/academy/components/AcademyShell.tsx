@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import { fetchMyAccess, isSuperAdmin, roleBadges } from "@/academy/lib/roles";
 import "../academy.css";
 
@@ -58,8 +59,7 @@ function useAcademyIdentity(): Identity {
     let active = true;
 
     async function load() {
-      const { data } = await supabase.auth.getUser();
-      const user = data.user;
+      const user = await getCurrentUser();
       if (!user) {
         if (active) setState(ANONYMOUS);
         return;

@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import type { ListResult } from "@/academy/lib/teaching";
 
 export type Notice = {
@@ -78,8 +79,8 @@ export async function fetchLessons(courseId: string): Promise<ListResult<Lesson>
 }
 
 async function getCurrentUserId(): Promise<string | null> {
-  const { data } = await supabase.auth.getUser();
-  return data.user?.id ?? null;
+  const user = await getCurrentUser();
+  return user?.id ?? null;
 }
 
 /** Course IDs the signed-in user is personally enrolled in as a student.
@@ -138,12 +139,12 @@ export async function postNotice(input: {
   body: string;
   courseId: string | null;
 }): Promise<{ error: string | null }> {
-  const { data: user } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   const { error } = await supabase.from("notices").insert({
     title: input.title,
     body: input.body,
     course_id: input.courseId,
-    created_by: user.user?.id ?? null,
+    created_by: user?.id ?? null,
   });
   return { error: error?.message ?? null };
 }
@@ -154,13 +155,13 @@ export async function createEvent(input: {
   date: string;
   courseId: string | null;
 }): Promise<{ error: string | null }> {
-  const { data: user } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   const { error } = await supabase.from("course_events").insert({
     title: input.title,
     description: input.description || null,
     event_date: input.date,
     course_id: input.courseId,
-    created_by: user.user?.id ?? null,
+    created_by: user?.id ?? null,
   });
   return { error: error?.message ?? null };
 }

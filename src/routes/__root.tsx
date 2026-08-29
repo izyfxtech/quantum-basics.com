@@ -14,6 +14,18 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { ScrollProgress } from "@/components/site/Motion";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { AcademyShell } from "@/academy/components/AcademyShell";
+// NOTE (perf, not yet done): SiteHeader/ScrollProgress/SiteFooter pull in
+// framer-motion, and AcademyShell pulls in its own data-fetching stack.
+// Both are imported statically here, so every route -- including
+// /academy/* and /blog/studio/*, which render one shell or the other, never
+// both -- currently downloads both shells' code as part of this root
+// module. Lazy-loading whichever shell the current route doesn't need
+// (React.lazy + Suspense, split on isAcademy below) would trim real bytes
+// off Academy/Studio page loads. Left alone deliberately: this file mixes
+// SSR'd marketing pages with ssr:false Academy/Studio routes, and getting
+// a Suspense boundary right across that split needs verifying in a live
+// browser (hydration timing, no flash of missing chrome) that a build+
+// typecheck pass can't confirm on its own.
 import { supabase } from "@/integrations/supabase/client";
 import { company } from "@/data/company";
 import defaultOgImage from "@/assets/hero-control-room.jpg";
@@ -98,12 +110,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap",
-      },
       { rel: "icon", type: "image/png", href: "/favicon.png" },
     ],
   }),

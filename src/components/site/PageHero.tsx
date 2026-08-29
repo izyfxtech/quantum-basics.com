@@ -16,6 +16,13 @@ function HeroBackdrop({ variant, image }: { variant: HeroVariant; image?: string
             src={image}
             alt=""
             aria-hidden="true"
+            // This is the LCP candidate on every page that renders a
+            // PageHero with an image — it fills the first thing visible on
+            // the page. Without a priority hint it competes evenly with
+            // every other request the browser discovers (icons, below-fold
+            // images, etc.); fetchPriority tells the browser to fetch it
+            // first among same-priority resources instead.
+            fetchPriority="high"
             initial={{ scale: 1.08, opacity: 0 }}
             animate={{ scale: 1, opacity: 0.3 }}
             transition={{ duration: 1.6, ease }}

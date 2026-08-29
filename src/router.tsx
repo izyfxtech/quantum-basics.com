@@ -34,7 +34,16 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
-    defaultPreloadStaleTime: 0,
+    // Preload a route's JS chunk (and loader, for the few routes that have
+    // one) on link hover/touchstart, so clicking feels instant instead of
+    // waiting for a fresh chunk fetch. This was previously inert:
+    // defaultPreloadStaleTime was set below with no defaultPreload, and
+    // preloading defaults to off, so nothing ever actually preloaded.
+    defaultPreload: "intent",
+    // Treat a preload as fresh for a few seconds after it fires, so the
+    // loader data it fetched on hover is actually reused on click rather
+    // than being immediately stale and re-fetched a second time.
+    defaultPreloadStaleTime: 10_000,
     rewrite: subdomainRewrite,
   });
 

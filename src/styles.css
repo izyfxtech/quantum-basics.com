@@ -2,6 +2,14 @@
 @source "../src";
 @import "tw-animate-css";
 
+/* Self-hosted, replacing the Google Fonts <link> that used to live in
+ * __root.tsx. Same two axes the old URL requested (opsz+wght for Fraunces,
+ * wght for Work Sans; both display: swap already) -- just served from this
+ * origin instead of a fonts.googleapis.com/fonts.gstatic.com round trip,
+ * and cacheable alongside the rest of the site's static assets. */
+@import "@fontsource-variable/fraunces/opsz.css";
+@import "@fontsource-variable/work-sans/wght.css";
+
 @custom-variant dark (&:is(.dark *));
 
 /*
@@ -39,8 +47,8 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --font-display: "Fraunces", ui-serif, Georgia, serif;
-  --font-sans: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces Variable", "Fraunces", ui-serif, Georgia, serif;
+  --font-sans: "Work Sans Variable", "Work Sans", ui-sans-serif, system-ui, sans-serif;
   --shadow-panel: 0 24px 60px -40px oklch(0.3 0.07 165 / 0.5);
   --shadow-lift: 0 30px 70px -40px oklch(0.3 0.07 165 / 0.55);
 }

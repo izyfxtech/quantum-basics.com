@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import type { CourseStaffRole } from "@/academy/lib/roles";
 import type { Json, Tables, TablesUpdate } from "@/integrations/supabase/types";
 import { validateUploadFile } from "@/lib/file-validation";
@@ -27,8 +28,8 @@ export type TeachingCourse = {
  * scoped to their own course_staff rows, not "every course" even for a
  * super admin without one — that's what /academy/admin is for. */
 export async function fetchMyTeachingCourses(): Promise<ListResult<TeachingCourse>> {
-  const { data: userData } = await supabase.auth.getUser();
-  const userId = userData.user?.id;
+  const user = await getCurrentUser();
+  const userId = user?.id;
   if (!userId) return { data: [], error: null };
 
   const { data, error } = await supabase
@@ -117,7 +118,7 @@ export async function createAssignment(input: {
   maxScore: number;
   published: boolean;
 }): Promise<{ error: string | null }> {
-  const { data: userData } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   const { error } = await supabase.from("assignments").insert({
     course_id: input.courseId,
     title: input.title,
@@ -126,7 +127,7 @@ export async function createAssignment(input: {
     due_at: input.dueAt || null,
     max_score: input.maxScore,
     published: input.published,
-    created_by: userData.user?.id ?? null,
+    created_by: user?.id ?? null,
   });
   return { error: error?.message ?? null };
 }
@@ -220,13 +221,13 @@ export async function gradeSubmission(
   submissionId: string,
   input: { score: number; feedback: string },
 ): Promise<{ error: string | null }> {
-  const { data: userData } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   const { error } = await supabase
     .from("submissions")
     .update({
       score: input.score,
       feedback: input.feedback,
-      graded_by: userData.user?.id ?? null,
+      graded_by: user?.id ?? null,
       graded_at: new Date().toISOString(),
     })
     .eq("id", submissionId);
@@ -298,7 +299,7 @@ export async function uploadCourseMaterial(
   const sizeError = validateUploadFile(file);
   if (sizeError) return { error: sizeError };
 
-  const { data: userData } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   const path = `${courseId}/${crypto.randomUUID()}-${file.name}`;
 
   const { error: uploadError } = await supabase.storage
@@ -313,7 +314,7 @@ export async function uploadCourseMaterial(
     storage_path: path,
     content_type: file.type || null,
     size_bytes: file.size,
-    uploaded_by: userData.user?.id ?? null,
+    uploaded_by: user?.id ?? null,
   });
   if (insertError) {
     await supabase.storage.from(MATERIALS_BUCKET).remove([path]);
@@ -402,7 +403,7 @@ export async function createQuiz(input: {
   published: boolean;
   dueAt: string | null;
 }): Promise<{ data: Quiz | null; error: string | null }> {
-  const { data: userData } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
   const { data, error } = await supabase
     .from("quizzes")
     .insert({
@@ -414,7 +415,7 @@ export async function createQuiz(input: {
       shuffle_questions: input.shuffleQuestions,
       published: input.published,
       due_at: input.dueAt,
-      created_by: userData.user?.id ?? null,
+      created_by: user?.id ?? null,
     })
     .select(QUIZ_COLUMNS)
     .single();

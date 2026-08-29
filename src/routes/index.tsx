@@ -150,6 +150,7 @@ function Home() {
             alt="Engineers monitoring an energy grid control room"
             width={1920}
             height={1088}
+            fetchPriority="high"
             className="h-full w-full object-cover object-[50%_30%]"
           />
         </motion.div>

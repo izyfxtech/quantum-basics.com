@@ -13,6 +13,7 @@ import {
   Timer,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import { Btn, EmptyState, ErrorNotice, Meter, Panel, Spinner, Tag } from "@/academy/components/ui";
 import {
   fetchCourseAssignments,
@@ -140,14 +141,14 @@ function CoursePage() {
     setPreviews(sorted);
     setActive((prev) => prev ?? sorted[0]?.id ?? null);
 
-    const { data: session } = await supabase.auth.getUser();
-    setSignedIn(Boolean(session.user));
-    if (session.user) {
+    const user = await getCurrentUser();
+    setSignedIn(Boolean(user));
+    if (user) {
       const { data: e } = await supabase
         .from("enrollments")
         .select("id")
         .eq("course_id", c.id)
-        .eq("user_id", session.user.id)
+        .eq("user_id", user.id)
         .maybeSingle();
       const isEnrolled = Boolean(e);
       setEnrolled(isEnrolled);
@@ -166,7 +167,7 @@ function CoursePage() {
         const { data: p } = await supabase
           .from("lesson_progress")
           .select("lesson_id")
-          .eq("user_id", session.user.id)
+          .eq("user_id", user.id)
           .in("lesson_id", ids);
         setDone(new Set((p ?? []).map((r) => r.lesson_id)));
       }
@@ -180,13 +181,13 @@ function CoursePage() {
 
   async function enrol() {
     if (!course) return;
-    const { data: session } = await supabase.auth.getUser();
-    if (!session.user) {
+    const user = await getCurrentUser();
+    if (!user) {
       navigate({ to: "/academy/auth" });
       return;
     }
     setBusy(true);
-    await supabase.from("enrollments").insert({ user_id: session.user.id, course_id: course.id });
+    await supabase.from("enrollments").insert({ user_id: user.id, course_id: course.id });
     setEnrolled(true);
     // Now that the enrollment row exists, RLS grants access to lesson
     // bodies -- fetch them so the newly-unlocked lessons render immediately
@@ -199,8 +200,8 @@ function CoursePage() {
   }
 
   async function toggleLesson(lessonId: string) {
-    const { data: session } = await supabase.auth.getUser();
-    if (!session.user) {
+    const user = await getCurrentUser();
+    if (!user) {
       navigate({ to: "/academy/auth" });
       return;
     }
@@ -214,7 +215,7 @@ function CoursePage() {
     } else {
       await supabase
         .from("lesson_progress")
-        .insert({ user_id: session.user.id, lesson_id: lessonId });
+        .insert({ user_id: user.id, lesson_id: lessonId });
       setDone((prev) => new Set(prev).add(lessonId));
     }
   }

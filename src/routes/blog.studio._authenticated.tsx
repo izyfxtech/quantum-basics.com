@@ -1,17 +1,21 @@
 import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { fetchMyBlogAccess, type BlogAccess } from "@/blog/lib/auth";
 import { BlogAccessContext } from "@/blog/lib/context";
 import { BlogStudioShell } from "@/blog/components/BlogStudioShell";
 import { EmptyState, ErrorNotice, Spinner } from "@/blog/components/ui";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import "@/blog/studio.css";
 
 export const Route = createFileRoute("/blog/studio/_authenticated")({
   ssr: false,
   beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/blog/studio/auth" });
+    // getCurrentUser() dedupes/caches supabase.auth.getUser() -- see that
+    // module's header. Without it this ran a fresh Auth round trip on
+    // every navigation between Studio pages (beforeLoad isn't covered by
+    // loader staleTime).
+    const user = await getCurrentUser();
+    if (!user) throw redirect({ to: "/blog/studio/auth" });
   },
   component: BlogStudioGuard,
 });

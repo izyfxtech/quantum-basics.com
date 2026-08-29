@@ -1,7 +1,6 @@
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, GraduationCap, Users } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { EmptyState, ErrorNotice, Panel, PortalHeading, Spinner, Tag } from "@/academy/components/ui";
 import { ROLE_LABELS } from "@/academy/lib/roles";
 import { fetchMyTeachingCourses, type TeachingCourse } from "@/academy/lib/teaching";
@@ -12,10 +11,11 @@ export const Route = createFileRoute("/academy/_authenticated/teaching")({
   head: () => ({
     meta: [{ title: "My courses | Quantum Basics Academy" }],
   }),
-  beforeLoad: async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) throw redirect({ to: "/academy/auth" });
-  },
+  // No beforeLoad here — the parent /academy/_authenticated route already
+  // guarantees a signed-in user (it redirects to /academy/auth otherwise,
+  // which short-circuits before this route's beforeLoad would ever run),
+  // so re-checking here was a second redundant Auth round trip on every
+  // navigation into this page for no additional safety.
   component: TeachingIndex,
 });
 

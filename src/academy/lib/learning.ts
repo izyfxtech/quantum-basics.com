@@ -1,4 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import type { ListResult } from "@/academy/lib/teaching";
 import type { QuestionType, QuizOption } from "@/academy/lib/teaching";
 import type { Json } from "@/integrations/supabase/types";
@@ -49,8 +50,8 @@ export async function submitAssignment(
   assignmentId: string,
   content: string,
 ): Promise<{ error: string | null }> {
-  const { data: userData } = await supabase.auth.getUser();
-  const userId = userData.user?.id;
+  const user = await getCurrentUser();
+  const userId = user?.id;
   if (!userId) return { error: "You need to be signed in to submit." };
 
   const { error } = await supabase.from("submissions").upsert(
@@ -171,8 +172,8 @@ export async function fetchMyQuizAttempts(quizId: string): Promise<ListResult<My
 export async function startQuizAttempt(
   quizId: string,
 ): Promise<{ data: { id: string; attemptNumber: number; startedAt: string } | null; error: string | null }> {
-  const { data: userData } = await supabase.auth.getUser();
-  const userId = userData.user?.id;
+  const user = await getCurrentUser();
+  const userId = user?.id;
   if (!userId) return { data: null, error: "You need to be signed in to start a quiz." };
 
   const { data, error } = await supabase

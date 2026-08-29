@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, useRouter } from "@tanstack/react-router"
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { getCurrentUser } from "@/integrations/supabase/current-user";
 import { academyTracks } from "@/data/site";
 import { Btn, SelectField, Spinner, TextField } from "@/academy/components/ui";
 import "@/academy/academy.css";
@@ -28,12 +29,12 @@ function Onboarding() {
   const [track, setTrack] = useState(academyTracks[0]?.title ?? "");
 
   const load = useCallback(async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) return;
+    const user = await getCurrentUser();
+    if (!user) return;
     const { data: profile } = await supabase
       .from("profiles")
       .select("full_name, phone, organisation, preferred_track")
-      .eq("id", data.user.id)
+      .eq("id", user.id)
       .maybeSingle();
     setFullName(profile?.full_name ?? "");
     setPhone(profile?.phone ?? "");
@@ -51,8 +52,8 @@ function Onboarding() {
     setError(null);
     setSaving(true);
 
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) {
+    const user = await getCurrentUser();
+    if (!user) {
       setSaving(false);
       navigate({ to: "/academy/auth", replace: true });
       return;
@@ -67,7 +68,7 @@ function Onboarding() {
         preferred_track: track,
         onboarding_completed_at: new Date().toISOString(),
       })
-      .eq("id", data.user.id);
+      .eq("id", user.id);
 
     setSaving(false);
     if (updateError) {

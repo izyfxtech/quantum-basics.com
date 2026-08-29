@@ -76,7 +76,7 @@ function Academy() {
           <img
             src={academyImage}
             alt="Instructor teaching trainees on PLC and SCADA equipment"
-            loading="lazy"
+            fetchPriority="high"
             width={1408}
             height={912}
             className="w-full rounded object-cover"
